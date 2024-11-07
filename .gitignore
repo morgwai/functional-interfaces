@@ -1,0 +1,14 @@
+local
+
+# build
+target
+build
+.gradle
+gradle/libs.versions.toml
+
+# ide
+.idea
+local.properties
+.project
+.classpath
+.settings
