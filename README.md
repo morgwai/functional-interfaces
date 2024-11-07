@@ -3,8 +3,8 @@
 Collection of Java functional interfaces.<br/>
 Copyright 2024 Piotr Morgwai Kotarbinski, Licensed under the Apache License, Version 2.0<br/>
 <br/>
-**latest release: [pending](https://search.maven.org/artifact/pl.morgwai.base/functional-interfaces/pending/jar)**
-([javadoc](https://javadoc.io/doc/pl.morgwai.base/functional-interfaces/pending))
+**latest release: [1.0](https://search.maven.org/artifact/pl.morgwai.base/functional-interfaces/1.0/jar)**
+([javadoc](https://javadoc.io/doc/pl.morgwai.base/functional-interfaces/1.0))
 
 
 ## MAIN USER CLASSES
