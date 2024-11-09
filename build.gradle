@@ -21,5 +21,9 @@ publishing {
 	}
 }
 
+dependencies {
+    testImplementation libs.junit.junit
+}
+
 group = 'pl.morgwai.base'
 version = '1.0-SNAPSHOT'

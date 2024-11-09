@@ -4,7 +4,6 @@ local
 target
 build
 .gradle
-gradle/libs.versions.toml
 
 # ide
 .idea
