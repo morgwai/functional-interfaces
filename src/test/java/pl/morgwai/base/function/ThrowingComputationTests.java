@@ -43,7 +43,7 @@ public class ThrowingComputationTests {
 	public void verifyThrowing2ComputationCasting()
 			throws InterruptedException, InstantiationException {
 		final var ignored = invoke(
-			(Throwing2Computation<String, InstantiationException, InterruptedException>)
+			(ThrowingComputation<String, InstantiationException, InterruptedException>)
 					this::throws2
 		);
 	}
@@ -88,7 +88,7 @@ public class ThrowingComputationTests {
 
 	static <
 		R, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable
-	> R call(ThrowingComputation<R, E1, E2, E3, E4> task) throws Exception {
+	> R call(Throwing4Computation<R, E1, E2, E3, E4> task) throws Exception {
 		return task.call();
 	}
 }

@@ -13,7 +13,7 @@ public interface Invokers {
 
 	static <
 		R, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable
-	> R invoke(ThrowingComputation<R, E1, E2, E3, E4> task) throws E1, E2, E3, E4 {
+	> R invoke(Throwing4Computation<R, E1, E2, E3, E4> task) throws E1, E2, E3, E4 {
 		return task.perform();
 	}
 
@@ -21,7 +21,7 @@ public interface Invokers {
 
 	static <
 		E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable
-	> void invoke(ThrowingTask<E1, E2, E3, E4> task) throws E1, E2, E3, E4 {
+	> void invoke(Throwing4Task<E1, E2, E3, E4> task) throws E1, E2, E3, E4 {
 		task.execute();
 	}
 

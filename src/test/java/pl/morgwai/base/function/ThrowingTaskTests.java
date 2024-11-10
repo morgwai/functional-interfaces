@@ -36,7 +36,7 @@ public class ThrowingTaskTests {
 	@Test
 	public void verifyThrowing2RunnableCasting()
 			throws InterruptedException, InstantiationException {
-		invoke((Throwing2Task<InstantiationException, InterruptedException>) this::throws2);
+		invoke((ThrowingTask<InstantiationException, InterruptedException>) this::throws2);
 	}
 
 
@@ -75,7 +75,7 @@ public class ThrowingTaskTests {
 
 	static <
 		E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable
-	> Void call(ThrowingTask<E1, E2, E3, E4> task) throws Exception {
+	> Void call(Throwing4Task<E1, E2, E3, E4> task) throws Exception {
 		return task.call();
 	}
 }
