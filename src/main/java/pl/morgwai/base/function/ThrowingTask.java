@@ -9,45 +9,18 @@ import java.util.function.*;
 /**
  * Task that can throw inferable {@link Exception} types.
  * This allows to precisely declare/infer types of {@link Exception}s thrown by lambda expressions
- * and avoid boilerplate try-catch-rethrowOrIgnore blocks.
- * <p>
- * Java compiler as of version 11 is able to accurately infer types of 0 or 1 {@link Exception}
- * thrown by a lambda expression (inferring {@link RuntimeException} to "fill the blanks" where
- * needed). Therefore if a lambda throws 2 (or more) {@link Exception}s, it is necessary to cast
- * such an expression to {@code ThrowingComputation} (or {@link Throwing2Task} for convenience) with
- * specific type arguments:</p>
- * <pre>{@code
- * public void doFilter(
- *     ServletRequest request,
- *     ServletResponse response,
- *     FilterChain chain
- * ) throws IOException, ServletException {
- *     final var ctx = getContext((HttpServletRequest) request);
- *     ctx.executeWithinSelf(
- *         (Throwing2Task<IOException, ServletException>)
- *                 () -> chain.doFilter(request, response)
- *     );
- * }}</pre>
- * <p>...Or to pass explicit type arguments to a given generic method:</p>
- * <pre>{@code
- * ctx.<IOException, ServletException, RuntimeException, RuntimeException, RuntimeException>
- *         executeWithinSelf(
- *     () -> chain.doFilter(request, response)
- * );}</pre>
- * @see ThrowingComputation
+ * and avoid boilerplate try-catch-rethrowOrIgnore blocks. See {@link ThrowingComputation} (similar
+ * interface but for non-void returning expressions) for detailed code examples.
+ * @see Throwing2Task Throwing2Task subclass for convenient casting
  */
 @FunctionalInterface
 public interface ThrowingTask<
-	E1 extends Throwable,
-	E2 extends Throwable,
-	E3 extends Throwable,
-	E4 extends Throwable,
-	E5 extends Throwable
+	E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable
 > extends Runnable, Callable<Void> {
 
 
 
-	void execute() throws E1, E2, E3, E4, E5;
+	void execute() throws E1, E2, E3, E4;
 
 
 
@@ -80,7 +53,8 @@ public interface ThrowingTask<
 
 
 
-	static Throwing2Task<RuntimeException, RuntimeException> of(Runnable runnable) {
+	static
+	Throwing2Task<RuntimeException, RuntimeException> of(Runnable runnable) {
 		return new Throwing2Task<>() {
 			@Override public void execute() {
 				runnable.run();
@@ -93,7 +67,8 @@ public interface ThrowingTask<
 
 
 
-	static <T> Throwing2Task<RuntimeException, RuntimeException> of(Consumer<T> consumer, T param) {
+	static <T>
+	Throwing2Task<RuntimeException, RuntimeException> of(Consumer<T> consumer, T param) {
 		return new Throwing2Task<>() {
 			@Override public void execute() {
 				consumer.accept(param);
@@ -108,7 +83,8 @@ public interface ThrowingTask<
 
 
 
-	static <T, U> Throwing2Task<RuntimeException, RuntimeException> of(BiConsumer<T, U> biConsumer,
+	static <T, U>
+	Throwing2Task<RuntimeException, RuntimeException> of(BiConsumer<T, U> biConsumer,
 			T param1, U param2) {
 		return new Throwing2Task<>() {
 			@Override public void execute() {

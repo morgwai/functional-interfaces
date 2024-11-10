@@ -41,6 +41,22 @@ public class ThrowingTaskTests {
 
 
 
+	void throws3() throws InterruptedException, InstantiationException, ClassNotFoundException {}
+
+	@Test
+	public void verifyThrowing3TaskCasting()
+			throws InterruptedException, InstantiationException, ClassNotFoundException {
+		invoke(
+			(Throwing3Task<
+				InstantiationException,
+				ClassNotFoundException,
+				InterruptedException
+			>) this::throws3
+		);
+	}
+
+
+
 	/**
 	 * Compiler insists {@link ThrowingTask#call()} never actually throws an {@link Exception} and
 	 * its {@code throws} declaration may be removed: test it's propagated correctly nevertheless.
@@ -58,12 +74,8 @@ public class ThrowingTaskTests {
 	}
 
 	static <
-		E1 extends Throwable,
-		E2 extends Throwable,
-		E3 extends Throwable,
-		E4 extends Throwable,
-		E5 extends Throwable
-	> Void call(ThrowingTask<E1, E2, E3, E4, E5> task) throws Exception {
+		E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable
+	> Void call(ThrowingTask<E1, E2, E3, E4> task) throws Exception {
 		return task.call();
 	}
 }

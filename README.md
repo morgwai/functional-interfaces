@@ -13,4 +13,4 @@ Copyright 2024 Piotr Morgwai Kotarbinski, Licensed under the Apache License, Ver
 Task that can throw inferable `Exception` types. This allows to precisely declare/infer types of `Exception`s thrown by lambda expressions and avoid boilerplate try-catch-rethrowOrIgnore blocks.
 
 ### [ThrowingComputation](https://javadoc.io/doc/pl.morgwai.base/functional-interfaces/latest/pl/morgwai/base/function/ThrowingComputation.html)
-Similar to `ThrowingTask` but returns non-void generic result.
+Similar to `ThrowingTask` but for non-void returning expressions.

@@ -7,26 +7,51 @@ import java.util.function.*;
 
 
 /**
- * {@link Callable} that can throw inferable {@link Exception} types.
+ * Similar to {@link Callable} but can throw inferable {@link Exception} types.
  * This allows to precisely declare/infer types of {@link Exception}s thrown by lambda expressions
  * and avoid boilerplate try-catch-rethrowOrIgnore blocks.
  * <p>
- * Similarly with {@link ThrowingTask} and {@link Throwing2Task}, there's
- * {@link Throwing2Computation} subclass for convenient casting.</p>
+ * <b>Example:</b><br/>
+ * Given some external function:</p>
+ * <pre>{@code
+ * String fetchFromDbAndProcess(long id) throws IOException;}</pre>
+ * <p>The following code:</p>
+ * <pre>{@code
+ * <R>
+ * R runWithinTx(Callable<R> dbOperation) throws Exception {
+ *     // start a TX, invoke `dbOperation.call()`, commit the TX if nothing was thrown
+ * }
+ *
+ * String fetchAndProcessWithinTx(long id) throws IOException {
+ *     try {
+ *         return runWithinTx(() -> fetchFromDbAndProcess(id));
+ *     } catch (IOException | RuntimeException e) {
+ *         throw e;
+ *     } catch (Exception neverHappens) {
+ *         throw new AssertionError("unreachable code", neverHappens);
+ *     }
+ * }}</pre>
+ * <p>...May be replaced with:</p>
+ * <pre>{@code
+ * <R, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable>
+ * R runWithinTx(ThrowingComputation<R, E1, E2, E3, E4> dbOperation) throws E1, E2, E3, E4 {
+ *     // almost identical as before: just replace `call` with `perform`
+ * }
+ *
+ * String fetchAndProcessWithinTx(long id) throws IOException {
+ *     return runWithinTx(() -> fetchFromDbAndProcess(id));
+ * }}</pre>
+ * @see Throwing2Computation Throwing2Computation subclass for convenient casting
+ * @see ThrowingTask ThrowingTask class for void-type operations
  */
 @FunctionalInterface
 public interface ThrowingComputation<
-	R,
-	E1 extends Throwable,
-	E2 extends Throwable,
-	E3 extends Throwable,
-	E4 extends Throwable,
-	E5 extends Throwable
+	R, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable
 > extends Runnable, Callable<R> {
 
 
 
-	R perform() throws E1, E2, E3, E4, E5;
+	R perform() throws E1, E2, E3, E4;
 
 
 
@@ -58,17 +83,10 @@ public interface ThrowingComputation<
 
 
 
-	static <
-		E1 extends Throwable,
-		E2 extends Throwable,
-		E3 extends Throwable,
-		E4 extends Throwable,
-		E5 extends Throwable
-	>
-	ThrowingComputation<Void, E1, E2, E3, E4, E5> of(ThrowingTask<E1, E2, E3, E4, E5> throwingTask)
-	{
+	static <E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable>
+	ThrowingComputation<Void, E1, E2, E3, E4> of(ThrowingTask<E1, E2, E3, E4> throwingTask) {
 		return new ThrowingComputation<>() {
-			@Override public Void perform() throws E1, E2, E3, E4, E5 {
+			@Override public Void perform() throws E1, E2, E3, E4 {
 				throwingTask.execute();
 				return null;
 			}
@@ -80,7 +98,8 @@ public interface ThrowingComputation<
 
 
 
-	static <R> Throwing2Computation<R, Exception, RuntimeException> of(Callable<R> callable) {
+	static <R>
+	Throwing2Computation<R, Exception, RuntimeException> of(Callable<R> callable) {
 		return new Throwing2Computation<>() {
 			@Override public R perform() throws Exception {
 				return callable.call();
@@ -110,11 +129,9 @@ public interface ThrowingComputation<
 
 
 
-	static <T, U, R> Throwing2Computation<R, RuntimeException, RuntimeException> of(
-		BiFunction<T, U, R> biFunction,
-		T param1,
-		U param2
-	) {
+	static <T, U, R>
+	Throwing2Computation<R, RuntimeException, RuntimeException> of(BiFunction<T, U, R> biFunction,
+			T param1, U param2) {
 		return new Throwing2Computation<>() {
 			@Override public R perform() {
 				return biFunction.apply(param1, param2);

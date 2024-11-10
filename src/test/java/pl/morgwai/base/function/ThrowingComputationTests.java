@@ -50,6 +50,25 @@ public class ThrowingComputationTests {
 
 
 
+	String throws3() throws InterruptedException, InstantiationException, ClassNotFoundException {
+		return "";
+	}
+
+	@Test
+	public void verifyThrowing3ComputationCasting()
+			throws InterruptedException, InstantiationException, ClassNotFoundException {
+		final var ignored = invoke(
+			(Throwing3Computation<
+				String,
+				InstantiationException,
+				ClassNotFoundException,
+				InterruptedException
+			>) this::throws3
+		);
+	}
+
+
+
 	/**
 	 * Compiler insists {@link ThrowingComputation#call()} never actually throws an
 	 * {@link Exception} and its {@code throws} declaration may be removed: test it's propagated
@@ -68,13 +87,8 @@ public class ThrowingComputationTests {
 	}
 
 	static <
-		R,
-		E1 extends Throwable,
-		E2 extends Throwable,
-		E3 extends Throwable,
-		E4 extends Throwable,
-		E5 extends Throwable
-	> R call(ThrowingComputation<R, E1, E2, E3, E4, E5> task) throws Exception {
+		R, E1 extends Throwable, E2 extends Throwable, E3 extends Throwable, E4 extends Throwable
+	> R call(ThrowingComputation<R, E1, E2, E3, E4> task) throws Exception {
 		return task.call();
 	}
 }
