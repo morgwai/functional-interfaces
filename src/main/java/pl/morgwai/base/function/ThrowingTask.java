@@ -29,7 +29,7 @@ public interface ThrowingTask<E1 extends Throwable, E2 extends Throwable>
 				runnable.run();
 			}
 			@Override public String toString() {
-				return "ThrowingTask { runnable = " + runnable + " }";
+				return runnable.toString();
 			}
 		};
 	}

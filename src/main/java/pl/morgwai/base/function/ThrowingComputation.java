@@ -87,7 +87,7 @@ public interface ThrowingComputation<R, E1 extends Throwable, E2 extends Throwab
 				return null;
 			}
 			@Override public String toString() {
-				return "ThrowingComputation { throwingTask = " + throwingTask + " }";
+				return throwingTask.toString();
 			}
 		};
 	}
@@ -101,7 +101,7 @@ public interface ThrowingComputation<R, E1 extends Throwable, E2 extends Throwab
 				return callable.call();
 			}
 			@Override public String toString() {
-				return "ThrowingComputation { callable = " + callable + " }";
+				return callable.toString();
 			}
 		};
 	}
@@ -151,6 +151,58 @@ public interface ThrowingComputation<R, E1 extends Throwable, E2 extends Throwab
 			}
 			@Override public String toString() {
 				return "ThrowingComputation { supplier = " + supplier + " }";
+			}
+		};
+	}
+
+
+
+	static
+	ThrowingComputation<Void, RuntimeException, RuntimeException> of(Runnable runnable) {
+		return new ThrowingComputation<>() {
+			@Override public Void perform() {
+				runnable.run();
+				return null;
+			}
+			@Override public String toString() {
+				return runnable.toString();
+			}
+		};
+	}
+
+
+
+	static <T>
+	ThrowingComputation<Void, RuntimeException, RuntimeException> of(Consumer<T> consumer, T param)
+	{
+		return new ThrowingComputation<>() {
+			@Override public Void perform() {
+				consumer.accept(param);
+				return null;
+			}
+			@Override public String toString() {
+				final var q = quote(param);
+				return "ThrowingComputation { consumer = " + consumer + ", param = " + q + param + q
+						+ " }";
+			}
+		};
+	}
+
+
+
+	static <T, U>
+	ThrowingComputation<Void, RuntimeException, RuntimeException> of(BiConsumer<T, U> biConsumer,
+			T param1, U param2) {
+		return new ThrowingComputation<>() {
+			@Override public Void perform() {
+				biConsumer.accept(param1, param2);
+				return null;
+			}
+			@Override public String toString() {
+				final var q1 = quote(param1);
+				final var q2 = quote(param2);
+				return "ThrowingComputation { biConsumer = " + biConsumer + ", param1 = " + q1
+						+ param1 + q1 + ", param2 = " + q2 + param2 + q2 + " }";
 			}
 		};
 	}
